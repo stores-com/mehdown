@@ -694,7 +694,7 @@ describe('detect image sizes', function() {
         });
     });
 
-    // https://github.com/mediocre/forum-service/issues/64
+    // https://github.com/stores-com/forum-service/issues/64
     it('BUG: Cannot read property "height" of undefined', function(done) {
         mehdown.render('jealous-dusty-magic http://cl.ly/image/0w251W2U1f1Q/Screen%20Shot%202014-06-16%20at%201.26.25%20PM.png @katylava says makes her think of fantasia', { detectImageSizes: true }, function(err, html) {
             assert.strictEqual(html, '<p>jealous-dusty-magic <img src="http://cl.ly/image/0w251W2U1f1Q/Screen%20Shot%202014-06-16%20at%201.26.25%20PM.png" /> <a href="/@katylava">@katylava</a> says makes her think of fantasia</p>');
@@ -711,7 +711,7 @@ describe('email', function() {
         });
     });
 
-    // https://github.com/mediocre/mehdown/issues/35
+    // https://github.com/stores-com/mehdown/issues/35
     it('email addresses with periods should be linked correctly', function(done) {
         mehdown.render('firstname.lastname@example.com', function(err, html) {
             assert.strictEqual(html, '<p><a href="mailto:firstname.lastname@example.com">firstname.lastname@example.com</a></p>');
@@ -944,7 +944,7 @@ describe('links', function() {
         });
     });
 
-    // https://github.com/mediocre/mehdown/issues/6
+    // https://github.com/stores-com/mehdown/issues/6
     it('URLs with underscores should not lose the underscores', function(done) {
         mehdown.render('https://example.com/_/status/416050320272551936', function(err, html) {
             assert.strictEqual(html, '<p><a href="https://example.com/_/status/416050320272551936">https://example.com/_/status/416050320272551936</a></p>');
@@ -952,7 +952,7 @@ describe('links', function() {
         });
     });
 
-    // https://github.com/mediocre/mehdown/issues/29
+    // https://github.com/stores-com/mehdown/issues/29
     it('should not link two, four, or five consecutive periods', function(done) {
         mehdown.render('Awww....I always wanted my own baby elephant.', function(err, html) {
             assert.strictEqual(html, '<p>Awww…I always wanted my own baby elephant.</p>');
@@ -960,7 +960,7 @@ describe('links', function() {
         });
     });
 
-    // https://github.com/mediocre/mehdown/issues/30
+    // https://github.com/stores-com/mehdown/issues/30
     it('should link URLs with @ characters', function(done) {
         mehdown.render('https://meh.com/@mediocrebot', function(err, html) {
             assert.strictEqual(html, '<p><a href="https://meh.com/@mediocrebot">https://meh.com/@mediocrebot</a></p>');
@@ -968,7 +968,7 @@ describe('links', function() {
         });
     });
 
-    // https://github.com/mediocre/mehdown/issues/39
+    // https://github.com/stores-com/mehdown/issues/39
     it('URLs that happen to have Emoji shortnames should be linked correctly', function(done) {
         mehdown.render('http://www.ebay.com/itm/GOgroove-BlueSYNC-OR3-Portable-Wireless-Bluetooth-Speaker-Splatter-Edition-/351328294837?var=&hash=item51cccc57b5:m:mLzVeDaMfRlxsCqFiutY-aw', function(err, html) {
             assert.strictEqual(html, '<p><a href="http://www.ebay.com/itm/GOgroove-BlueSYNC-OR3-Portable-Wireless-Bluetooth-Speaker-Splatter-Edition-/351328294837?var=&hash=item51cccc57b5:m:mLzVeDaMfRlxsCqFiutY-aw">http://www.ebay.com/itm/GOgroove-BlueSYNC-OR3-Portable-Wireless-Bluetooth-Speaker-Splatter-Edition-/351328294837?var=&amp;hash=item51cccc57b5:m:mLzVeDaMfRlxsCqFiutY-aw</a></p>');
