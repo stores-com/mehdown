@@ -33,6 +33,7 @@ jobs:
     - name: Test
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
         if [ "${{ matrix.node-version }}" == "${RUN_COVERAGE_FOR}" ]
