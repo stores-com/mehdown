@@ -47,7 +47,7 @@ The codebase uses markdown-it as the base parser and extends it with custom plug
 - Image processing with size detection
 - Emoji conversion (shortnames and unicode)
 - BBCode tag support
-- Command processing (e.g., /cowsay, /flip)
+- Command processing (e.g., /flip)
 
 ### Key Implementation Patterns
 

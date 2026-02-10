@@ -1,40 +1,34 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('kickstarter', function() {
-    it('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(done) {
-        mehdown.render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(err, html) {
-            assert.equal(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('kickstarter', { concurrency: true }, async (t) => {
+    await t.test('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', async () => {
+        const html = await render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec');
+        assert.strictEqual(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
     });
 
-    it('https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec', function(done) {
-        mehdown.render('https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec', function(err, html) {
-            assert.equal(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
-            done();
-        });
+    await t.test('https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec', async () => {
+        const html = await render('https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec');
+        assert.strictEqual(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
     });
 
-    it('[text](https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec)', function(done) {
-        mehdown.render('[text](https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec)', function(err, html) {
-            assert.equal(html, '<p><a href="https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec">text</a></p>');
-            done();
-        });
+    await t.test('[text](https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec)', async () => {
+        const html = await render('[text](https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec)');
+        assert.strictEqual(html, '<p><a href="https://www.kickstarter.com/projects/schlock/crossing-paths-film-photography-documentary?ref=discover_rec">text</a></p>');
     });
 
-    it('kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(done) {
-        mehdown.render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(err, html) {
-            assert.equal(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
-            done();
-        });
+    await t.test('kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', async () => {
+        const html = await render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec');
+        assert.strictEqual(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
     });
 
-    it('www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(done) {
-        mehdown.render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', function(err, html) {
-            assert.equal(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
-            done();
-        });
+    await t.test('www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec', async () => {
+        const html = await render('https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary?ref=discover_rec');
+        assert.strictEqual(html, '<p><iframe class="kickstarter" frameborder="0" scrolling="no" src="https://www.kickstarter.com/projects/1270124222/crossing-paths-film-photography-documentary/widget/card.html"></iframe></p>');
     });
 });

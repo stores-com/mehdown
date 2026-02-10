@@ -1,54 +1,44 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('vine', function() {
-    it('https://vine.co/v/hWZ9mbJZaKE', function(done) {
-        mehdown.render('https://vine.co/v/hWZ9mbJZaKE', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('vine', { concurrency: true }, async (t) => {
+    await t.test('https://vine.co/v/hWZ9mbJZaKE', async () => {
+        const html = await render('https://vine.co/v/hWZ9mbJZaKE');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
     });
 
-    it('https://vine.co/v/eLnKWtjTJup', function(done) {
-        mehdown.render('https://vine.co/v/eLnKWtjTJup', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
-            done();
-        });
+    await t.test('https://vine.co/v/eLnKWtjTJup', async () => {
+        const html = await render('https://vine.co/v/eLnKWtjTJup');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
     });
 
-    it('https://vine.co/v/eLnKWtjTJup/embed', function(done) {
-        mehdown.render('https://vine.co/v/eLnKWtjTJup/embed', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
-            done();
-        });
+    await t.test('https://vine.co/v/eLnKWtjTJup/embed', async () => {
+        const html = await render('https://vine.co/v/eLnKWtjTJup/embed');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
     });
 
-    it('https://vine.co/v/eLnKWtjTJup/similar', function(done) {
-        mehdown.render('https://vine.co/v/eLnKWtjTJup/similar', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
-            done();
-        });
+    await t.test('https://vine.co/v/eLnKWtjTJup/similar', async () => {
+        const html = await render('https://vine.co/v/eLnKWtjTJup/similar');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/eLnKWtjTJup/embed/simple"></iframe></p>');
     });
 
-    it('[text](https://vine.co/v/hWZ9mbJZaKE)', function(done) {
-        mehdown.render('[text](https://vine.co/v/hWZ9mbJZaKE)', function(err, html) {
-            assert.equal(html, '<p><a href="https://vine.co/v/hWZ9mbJZaKE">text</a></p>');
-            done();
-        });
+    await t.test('[text](https://vine.co/v/hWZ9mbJZaKE)', async () => {
+        const html = await render('[text](https://vine.co/v/hWZ9mbJZaKE)');
+        assert.strictEqual(html, '<p><a href="https://vine.co/v/hWZ9mbJZaKE">text</a></p>');
     });
 
-    it('vine.co/v/hWZ9mbJZaKE', function(done) {
-        mehdown.render('vine.co/v/hWZ9mbJZaKE', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
-            done();
-        });
+    await t.test('vine.co/v/hWZ9mbJZaKE', async () => {
+        const html = await render('vine.co/v/hWZ9mbJZaKE');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
     });
 
-    it('www.vine.co/v/hWZ9mbJZaKE', function(done) {
-        mehdown.render('www.vine.co/v/hWZ9mbJZaKE', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
-            done();
-        });
+    await t.test('www.vine.co/v/hWZ9mbJZaKE', async () => {
+        const html = await render('www.vine.co/v/hWZ9mbJZaKE');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vine" frameborder="0" src="https://vine.co/v/hWZ9mbJZaKE/embed/simple"></iframe></p>');
     });
 });

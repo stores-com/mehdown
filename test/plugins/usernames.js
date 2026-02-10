@@ -1,82 +1,64 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('usernames', function() {
-    it('@username', function(done) {
-        mehdown.render('@username', function(err, html) {
-            assert.equal(html, '<p><a href="/@username">@username</a></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('usernames', { concurrency: true }, async (t) => {
+    await t.test('@username', async () => {
+        const html = await render('@username');
+        assert.strictEqual(html, '<p><a href="/@username">@username</a></p>');
     });
 
-    it('@username (with baseUrl)', function(done) {
-        mehdown.render('@username', { baseUrl: 'https://mediocre.com' }, function(err, html) {
-            assert.equal(html, '<p><a href="https://mediocre.com/@username">@username</a></p>');
-            done();
-        });
+    await t.test('@username (with baseUrl)', async () => {
+        const html = await render('@username', { baseUrl: 'https://mediocre.com' });
+        assert.strictEqual(html, '<p><a href="https://mediocre.com/@username">@username</a></p>');
     });
 
-    it('@@username', function(done) {
-        mehdown.render('@@username', function(err, html) {
-            assert.equal(html, '<p>@@username</p>');
-            done();
-        });
+    await t.test('@@username', async () => {
+        const html = await render('@@username');
+        assert.strictEqual(html, '<p>@@username</p>');
     });
 
-    it('@username @othername', function(done) {
-        mehdown.render('@username @othername', function(err, html) {
-            assert.equal(html, '<p><a href="/@username">@username</a> <a href="/@othername">@othername</a></p>');
-            done();
-        });
+    await t.test('@username @othername', async () => {
+        const html = await render('@username @othername');
+        assert.strictEqual(html, '<p><a href="/@username">@username</a> <a href="/@othername">@othername</a></p>');
     });
 
-    it('abc @username 123', function(done) {
-        mehdown.render('abc @username 123', function(err, html) {
-            assert.equal(html, '<p>abc <a href="/@username">@username</a> 123</p>');
-            done();
-        });
+    await t.test('abc @username 123', async () => {
+        const html = await render('abc @username 123');
+        assert.strictEqual(html, '<p>abc <a href="/@username">@username</a> 123</p>');
     });
 
-    it('abc @username1 notausername@notausername @username2 123', function(done) {
-        mehdown.render('abc @username1 notausername@notausername @username2 123', function(err, html) {
-            assert.equal(html, '<p>abc <a href="/@username1">@username1</a> notausername@notausername <a href="/@username2">@username2</a> 123</p>');
-            done();
-        });
+    await t.test('abc @username1 notausername@notausername @username2 123', async () => {
+        const html = await render('abc @username1 notausername@notausername @username2 123');
+        assert.strictEqual(html, '<p>abc <a href="/@username1">@username1</a> notausername@notausername <a href="/@username2">@username2</a> 123</p>');
     });
 
-    it('mediocre.com/@username', function(done) {
-        mehdown.render('mediocre.com/@username', function(err, html) {
-            assert.equal(html, '<p><a href="http://mediocre.com/@username">mediocre.com/@username</a></p>');
-            done();
-        });
+    await t.test('mediocre.com/@username', async () => {
+        const html = await render('mediocre.com/@username');
+        assert.strictEqual(html, '<p><a href="http://mediocre.com/@username">mediocre.com/@username</a></p>');
     });
 
-    it('http://mediocre.com/@username', function(done) {
-        mehdown.render('http://mediocre.com/@username', function(err, html) {
-            assert.equal(html, '<p><a href="http://mediocre.com/@username">http://mediocre.com/@username</a></p>');
-            done();
-        });
+    await t.test('http://mediocre.com/@username', async () => {
+        const html = await render('http://mediocre.com/@username');
+        assert.strictEqual(html, '<p><a href="http://mediocre.com/@username">http://mediocre.com/@username</a></p>');
     });
 
-    it('https://mediocre.com/@username', function(done) {
-        mehdown.render('https://mediocre.com/@username', function(err, html) {
-            assert.equal(html, '<p><a href="https://mediocre.com/@username">https://mediocre.com/@username</a></p>');
-            done();
-        });
+    await t.test('https://mediocre.com/@username', async () => {
+        const html = await render('https://mediocre.com/@username');
+        assert.strictEqual(html, '<p><a href="https://mediocre.com/@username">https://mediocre.com/@username</a></p>');
     });
 
-    it('[@username](https://mediocre.com/@username)', function(done) {
-        mehdown.render('[@username](https://mediocre.com/@username)', function(err, html) {
-            assert.equal(html, '<p><a href="https://mediocre.com/@username">@username</a></p>');
-            done();
-        });
+    await t.test('[@username](https://mediocre.com/@username)', async () => {
+        const html = await render('[@username](https://mediocre.com/@username)');
+        assert.strictEqual(html, '<p><a href="https://mediocre.com/@username">@username</a></p>');
     });
 
-    it('…@dave', function(done) {
-        mehdown.render('…@dave', function(err, html) {
-            assert.equal(html, '<p>…<a href="/@dave">@dave</a></p>');
-            done();
-        });
+    await t.test('…@dave', async () => {
+        const html = await render('…@dave');
+        assert.strictEqual(html, '<p>…<a href="/@dave">@dave</a></p>');
     });
 });

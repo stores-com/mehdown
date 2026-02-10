@@ -1,26 +1,24 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('kaltura', function() {
-    it('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic', function(done) {
-        mehdown.render('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/33370462?iframeembed=true&entry_id=0_h4hdsqdk"></iframe></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('kaltura', { concurrency: true }, async (t) => {
+    await t.test('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic', async () => {
+        const html = await render('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/33370462?iframeembed=true&entry_id=0_h4hdsqdk"></iframe></p>');
     });
 
-    it('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic#t=00:10', function(done) {
-        mehdown.render('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic#t=01:23', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/33370462?iframeembed=true&entry_id=0_h4hdsqdk"></iframe></p>');
-            done();
-        });
+    await t.test('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic#t=00:10', async () => {
+        const html = await render('https://cdnapisec.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/33370462/entry_id/0_h4hdsqdk/embed/dynamic#t=01:23');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/33370462?iframeembed=true&entry_id=0_h4hdsqdk"></iframe></p>');
     });
 
-    it('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe', function(done) {
-        mehdown.render('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/39156232?iframeembed=true&entry_id=0_meiqzwlr"></iframe></p>');
-            done();
-        });
+    await t.test('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe', async () => {
+        const html = await render('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/39156232?iframeembed=true&entry_id=0_meiqzwlr"></iframe></p>');
     });
 });

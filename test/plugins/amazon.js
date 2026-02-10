@@ -1,69 +1,49 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('amazon', function() {
-    it('https://www.amazon.com/dp/B0D3VQ6MH5', function(done) {
-        mehdown.render('https://www.amazon.com/dp/B0D3VQ6MH5', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5</a></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('amazon', { concurrency: true }, async (t) => {
+    await t.test('https://www.amazon.com/dp/B0D3VQ6MH5', async () => {
+        const html = await render('https://www.amazon.com/dp/B0D3VQ6MH5');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5</a></p>');
     });
 
-    it('https://www.amazon.com/dp/B0D3VQ6MH5?th=1', function(done) {
-        mehdown.render('https://www.amazon.com/dp/B0D3VQ6MH5?th=1', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5?th=1</a></p>');
-            done();
-        });
+    await t.test('https://www.amazon.com/dp/B0D3VQ6MH5?th=1', async () => {
+        const html = await render('https://www.amazon.com/dp/B0D3VQ6MH5?th=1');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5?th=1</a></p>');
     });
 
-    it('https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar', function(done) {
-        mehdown.render('https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar&tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5?th=1&amp;foo=bar</a></p>');
-            done();
-        });
+    await t.test('https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar', async () => {
+        const html = await render('https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar&tag=mehdown-20">https://www.amazon.com/dp/B0D3VQ6MH5?th=1&amp;foo=bar</a></p>');
     });
 
-    it('https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace', function(done) {
-        mehdown.render('https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace">https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace</a></p>');
-            done();
-        });
+    await t.test('https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace', async () => {
+        const html = await render('https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace">https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace</a></p>');
     });
 
-    it('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5)', function(done) {
-        mehdown.render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5)', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=mehdown-20">amazon link</a></p>');
-            done();
-        });
+    await t.test('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5)', async () => {
+        const html = await render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5)');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=mehdown-20">amazon link</a></p>');
     });
 
-    it('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1)', function(done) {
-        mehdown.render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1)', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&tag=mehdown-20">amazon link</a></p>');
-            done();
-        });
+    await t.test('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1)', async () => {
+        const html = await render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1)');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&tag=mehdown-20">amazon link</a></p>');
     });
 
-    it('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar)', function(done) {
-        mehdown.render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar)', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar&tag=mehdown-20">amazon link</a></p>');
-            done();
-        });
+    await t.test('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar)', async () => {
+        const html = await render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar)');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?th=1&foo=bar&tag=mehdown-20">amazon link</a></p>');
     });
 
-    it('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace)', function(done) {
-        mehdown.render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace)', function(err, html) {
-            assert.ifError(err);
-            assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace">amazon link</a></p>');
-            done();
-        });
+    await t.test('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace)', async () => {
+        const html = await render('[amazon link](https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace)');
+        assert.strictEqual(html, '<p><a href="https://www.amazon.com/dp/B0D3VQ6MH5?tag=donotreplace">amazon link</a></p>');
     });
 });
