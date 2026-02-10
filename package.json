@@ -25,7 +25,10 @@
     ],
     "main": "./lib",
     "name": "mehdown",
-    "repository": "https://github.com/stores-com/mehdown",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/stores-com/mehdown.git"
+    },
     "scripts": {
         "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
         "test": "node --test --test-concurrency=true --test-force-exit --test-reporter=spec"
