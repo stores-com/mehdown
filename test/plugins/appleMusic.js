@@ -1,26 +1,24 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('Apple Music', function() {
-    it('https://itunes.apple.com/us/album/the-rescues/id1233432159', function(done) {
-        mehdown.render('https://itunes.apple.com/us/album/the-rescues/id1233432159', function(err, html) {
-            assert.equal(html, '<p><iframe class="apple-music" frameborder="0" src="//tools.applemusic.com/embed/v1/album/1233432159"></iframe></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('Apple Music', { concurrency: true }, async (t) => {
+    await t.test('https://itunes.apple.com/us/album/the-rescues/id1233432159', async () => {
+        const html = await render('https://itunes.apple.com/us/album/the-rescues/id1233432159');
+        assert.strictEqual(html, '<p><iframe class="apple-music" frameborder="0" src="//tools.applemusic.com/embed/v1/album/1233432159"></iframe></p>');
     });
 
-    it('https://itunes.apple.com/us/album/the-rescues/1233432159', function(done) {
-        mehdown.render('https://itunes.apple.com/us/album/the-rescues/1233432159', function(err, html) {
-            assert.equal(html, '<p><iframe class="apple-music" frameborder="0" src="//tools.applemusic.com/embed/v1/album/1233432159"></iframe></p>');
-            done();
-        });
+    await t.test('https://itunes.apple.com/us/album/the-rescues/1233432159', async () => {
+        const html = await render('https://itunes.apple.com/us/album/the-rescues/1233432159');
+        assert.strictEqual(html, '<p><iframe class="apple-music" frameborder="0" src="//tools.applemusic.com/embed/v1/album/1233432159"></iframe></p>');
     });
 
-    it('[The Rescues](https://itunes.apple.com/us/album/the-rescues/1233432159)', function(done) {
-        mehdown.render('[The Rescues](https://itunes.apple.com/us/album/the-rescues/1233432159)', function(err, html) {
-            assert.equal(html, '<p><a href="https://itunes.apple.com/us/album/the-rescues/1233432159">The Rescues</a></p>');
-            done();
-        });
+    await t.test('[The Rescues](https://itunes.apple.com/us/album/the-rescues/1233432159)', async () => {
+        const html = await render('[The Rescues](https://itunes.apple.com/us/album/the-rescues/1233432159)');
+        assert.strictEqual(html, '<p><a href="https://itunes.apple.com/us/album/the-rescues/1233432159">The Rescues</a></p>');
     });
 });

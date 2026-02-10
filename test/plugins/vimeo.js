@@ -1,33 +1,29 @@
-const assert = require('assert');
+const assert = require('node:assert');
+const test = require('node:test');
+const { promisify } = require('node:util');
 
 const mehdown = require('../../lib');
 
-describe('vimeo', function() {
-    it('http://vimeo.com/78950165', function(done) {
-        mehdown.render('http://vimeo.com/78950165', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
-            done();
-        });
+const render = promisify(mehdown.render.bind(mehdown));
+
+test('vimeo', { concurrency: true }, async (t) => {
+    await t.test('http://vimeo.com/78950165', async () => {
+        const html = await render('http://vimeo.com/78950165');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
     });
 
-    it('[text](http://vimeo.com/78950165)', function(done) {
-        mehdown.render('[text](http://vimeo.com/78950165)', function(err, html) {
-            assert.equal(html, '<p><a href="http://vimeo.com/78950165">text</a></p>');
-            done();
-        });
+    await t.test('[text](http://vimeo.com/78950165)', async () => {
+        const html = await render('[text](http://vimeo.com/78950165)');
+        assert.strictEqual(html, '<p><a href="http://vimeo.com/78950165">text</a></p>');
     });
 
-    it('vimeo.com/78950165', function(done) {
-        mehdown.render('vimeo.com/78950165', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
-            done();
-        });
+    await t.test('vimeo.com/78950165', async () => {
+        const html = await render('vimeo.com/78950165');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
     });
 
-    it('www.vimeo.com/78950165', function(done) {
-        mehdown.render('www.vimeo.com/78950165', function(err, html) {
-            assert.equal(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
-            done();
-        });
+    await t.test('www.vimeo.com/78950165', async () => {
+        const html = await render('www.vimeo.com/78950165');
+        assert.strictEqual(html, '<p><iframe allowfullscreen class="vimeo" frameborder="0" src="https://player.vimeo.com/video/78950165"></iframe></p>');
     });
 });
