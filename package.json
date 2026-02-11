@@ -24,6 +24,7 @@
         "markdown"
     ],
     "main": "./lib",
+    "license": "MIT",
     "name": "mehdown",
     "repository": {
         "type": "git",
