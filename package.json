@@ -31,7 +31,7 @@
         "url": "git+https://github.com/stores-com/mehdown.git"
     },
     "scripts": {
-        "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+        "coveralls": "node --test --test-concurrency=true --test-force-exit --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=lcov.info && coveralls < lcov.info",
         "test": "node --test --test-concurrency=true --test-force-exit --test-reporter=spec"
     },
     "version": "2.60.0"
