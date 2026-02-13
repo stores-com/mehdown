@@ -195,107 +195,6 @@ test('commands', { concurrency: true }, async (t) => {
         });
     });
 
-    t.test('Google API', { concurrency: 1 }, async (t) => {
-        t.test('/google', { concurrency: 1 }, async (t) => {
-            t.test('/google', async () => {
-                const html = await render('/google');
-                assert.strictEqual(html, '<p>/google</p>');
-            });
-
-            t.test('/google meh without API key', async () => {
-                const googleApiKey = process.env.GOOGLE_API_KEY;
-                delete process.env.GOOGLE_API_KEY;
-
-                const html = await render('/google meh');
-                assert.strictEqual(html, '<p>/google meh</p>');
-
-                if (googleApiKey) {
-                    process.env.GOOGLE_API_KEY = googleApiKey;
-                }
-            });
-
-            t.test('/google meh with API key', async () => {
-                if (!process.env.GOOGLE_API_KEY) {
-                    return;
-                }
-
-                const html = await render('/google meh');
-                assert.notStrictEqual(html, '<p>/google meh</p>');
-            });
-        });
-
-        t.test('/image', { concurrency: 1 }, async (t) => {
-            t.test('/image', async () => {
-                const html = await render('/image');
-                assert.strictEqual(html, '<p>/image</p>');
-            });
-
-            t.test('/image meh', async () => {
-                const html = await render('/image meh');
-
-                if (process.env.GOOGLE_API_KEY) {
-                    assert.notStrictEqual(html, '<p>/image meh</p>');
-                } else {
-                    assert.strictEqual(html, '<p>/image meh</p>');
-                }
-            });
-
-            t.test('/image neon pink on black', async () => {
-                const html = await render('/image neon pink on black');
-
-                if (process.env.GOOGLE_API_KEY) {
-                    assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
-                } else {
-                    assert.strictEqual(html, '<p>/image neon pink on black</p>');
-                }
-            });
-
-            t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', async () => {
-                const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
-                assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
-            });
-        });
-
-        t.test('/youtube', { concurrency: 1 }, async (t) => {
-            t.test('/youtube', async () => {
-                const html = await render('/youtube');
-                assert.strictEqual(html, '<p>/youtube</p>');
-            });
-
-            t.test('/youtube meh without API key', async () => {
-                const googleApiKey = process.env.GOOGLE_API_KEY;
-                delete process.env.GOOGLE_API_KEY;
-
-                const html = await render('/youtube meh');
-                assert.strictEqual(html, '<p>/youtube meh</p>');
-
-                if (googleApiKey) {
-                    process.env.GOOGLE_API_KEY = googleApiKey;
-                }
-            });
-
-            t.test('/youtube Purple Reign', async () => {
-                const html = await render('/youtube Purple Reign');
-
-                if (process.env.GOOGLE_API_KEY) {
-                    assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
-                } else {
-                    assert.strictEqual(html, '<p>/youtube Purple Reign</p>');
-                }
-            });
-
-            t.test('/youtube simon\'s cat', async () => {
-                const html = await render('/youtube simon\'s cat');
-
-                if (process.env.GOOGLE_API_KEY) {
-                    assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
-                } else {
-                    assert.strictEqual(html, '<p>/youtube simon\u2019s cat</p>');
-                }
-            });
-        });
-    });
-
     t.test('/jumble', { concurrency: true }, async (t) => {
         t.test('/jumble', async () => {
             const html = await render('/jumble');
@@ -510,6 +409,107 @@ test('commands', { concurrency: true }, async (t) => {
     t.test('/vintner', async () => {
         const html = await render('/vintner');
         assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
+    });
+});
+
+test('Google API', { concurrency: 1 }, async (t) => {
+    t.test('/google', { concurrency: 1 }, async (t) => {
+        t.test('/google', async () => {
+            const html = await render('/google');
+            assert.strictEqual(html, '<p>/google</p>');
+        });
+
+        t.test('/google meh without API key', async () => {
+            const googleApiKey = process.env.GOOGLE_API_KEY;
+            delete process.env.GOOGLE_API_KEY;
+
+            const html = await render('/google meh');
+            assert.strictEqual(html, '<p>/google meh</p>');
+
+            if (googleApiKey) {
+                process.env.GOOGLE_API_KEY = googleApiKey;
+            }
+        });
+
+        t.test('/google meh with API key', async () => {
+            if (!process.env.GOOGLE_API_KEY) {
+                return;
+            }
+
+            const html = await render('/google meh');
+            assert.notStrictEqual(html, '<p>/google meh</p>');
+        });
+    });
+
+    t.test('/image', { concurrency: 1 }, async (t) => {
+        t.test('/image', async () => {
+            const html = await render('/image');
+            assert.strictEqual(html, '<p>/image</p>');
+        });
+
+        t.test('/image meh', async () => {
+            const html = await render('/image meh');
+
+            if (process.env.GOOGLE_API_KEY) {
+                assert.notStrictEqual(html, '<p>/image meh</p>');
+            } else {
+                assert.strictEqual(html, '<p>/image meh</p>');
+            }
+        });
+
+        t.test('/image neon pink on black', async () => {
+            const html = await render('/image neon pink on black');
+
+            if (process.env.GOOGLE_API_KEY) {
+                assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
+            } else {
+                assert.strictEqual(html, '<p>/image neon pink on black</p>');
+            }
+        });
+
+        t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', async () => {
+            const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
+            assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
+        });
+    });
+
+    t.test('/youtube', { concurrency: 1 }, async (t) => {
+        t.test('/youtube', async () => {
+            const html = await render('/youtube');
+            assert.strictEqual(html, '<p>/youtube</p>');
+        });
+
+        t.test('/youtube meh without API key', async () => {
+            const googleApiKey = process.env.GOOGLE_API_KEY;
+            delete process.env.GOOGLE_API_KEY;
+
+            const html = await render('/youtube meh');
+            assert.strictEqual(html, '<p>/youtube meh</p>');
+
+            if (googleApiKey) {
+                process.env.GOOGLE_API_KEY = googleApiKey;
+            }
+        });
+
+        t.test('/youtube Purple Reign', async () => {
+            const html = await render('/youtube Purple Reign');
+
+            if (process.env.GOOGLE_API_KEY) {
+                assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
+            } else {
+                assert.strictEqual(html, '<p>/youtube Purple Reign</p>');
+            }
+        });
+
+        t.test('/youtube simon\'s cat', async () => {
+            const html = await render('/youtube simon\'s cat');
+
+            if (process.env.GOOGLE_API_KEY) {
+                assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
+            } else {
+                assert.strictEqual(html, '<p>/youtube simon\u2019s cat</p>');
+            }
+        });
     });
 });
 
