@@ -82,6 +82,30 @@ test('commands', { concurrency: true }, async (t) => {
             assert(!html.includes('<code>heads</code> or <code>tails</code> are your only options here.'));
         });
 
+        t.test('/coinflip heads YOU WON', async () => {
+            let html;
+            do {
+                html = await render('/coinflip heads');
+            } while (!html.includes('YOU WON'));
+            assert(html.includes('YOU WON'));
+        });
+
+        t.test('/coinflip heads YOU LOST', async () => {
+            let html;
+            do {
+                html = await render('/coinflip heads');
+            } while (!html.includes('YOU LOST'));
+            assert(html.includes('YOU LOST'));
+        });
+
+        t.test('/coinflip heads Better luck next time', async () => {
+            let html;
+            do {
+                html = await render('/coinflip heads');
+            } while (!html.includes('Better luck next time'));
+            assert(html.includes('Better luck next time'));
+        });
+
         t.test('/coinflip foo', async () => {
             const html = await render('/coinflip foo');
             assert.notStrictEqual(html, '<p>/coinflip foo</p>');
@@ -92,6 +116,11 @@ test('commands', { concurrency: true }, async (t) => {
     t.test('/concerned', async () => {
         const html = await render('/concerned');
         assert.strictEqual(html, '<p>ಠ_ಠ</p>');
+    });
+
+    t.test('/8ball', async () => {
+        const html = await render('/8ball Do I need a new lease on life?');
+        assert.notStrictEqual(html, '<p>/8ball Do I need a new lease on life?</p>');
     });
 
     t.test('/eightball', async () => {
@@ -167,11 +196,14 @@ test('commands', { concurrency: true }, async (t) => {
 
             t.test('/google meh without API key', async () => {
                 const googleApiKey = process.env.GOOGLE_API_KEY;
-                process.env.GOOGLE_API_KEY = undefined;
+                delete process.env.GOOGLE_API_KEY;
 
                 const html = await render('/google meh');
                 assert.strictEqual(html, '<p>/google meh</p>');
-                process.env.GOOGLE_API_KEY = googleApiKey;
+
+                if (googleApiKey) {
+                    process.env.GOOGLE_API_KEY = googleApiKey;
+                }
             });
 
             t.test('/google meh with API key', { skip: !process.env.GOOGLE_API_KEY }, async () => {
@@ -210,11 +242,14 @@ test('commands', { concurrency: true }, async (t) => {
 
             t.test('/youtube meh without API key', async () => {
                 const googleApiKey = process.env.GOOGLE_API_KEY;
-                process.env.GOOGLE_API_KEY = undefined;
+                delete process.env.GOOGLE_API_KEY;
 
                 const html = await render('/youtube meh');
                 assert.strictEqual(html, '<p>/youtube meh</p>');
-                process.env.GOOGLE_API_KEY = googleApiKey;
+
+                if (googleApiKey) {
+                    process.env.GOOGLE_API_KEY = googleApiKey;
+                }
             });
 
             t.test('/youtube Purple Reign', { skip: !process.env.GOOGLE_API_KEY }, async () => {
@@ -339,6 +374,58 @@ test('commands', { concurrency: true }, async (t) => {
             assert(!html.includes('Usage: /roll'));
         });
 
+        t.test('/roll -h', async () => {
+            const html = await render('/roll -h');
+            assert.notStrictEqual(html, '<p>/roll -h</p>');
+            assert(!html.includes('Invalid options'));
+            assert(!html.includes('You rolled a'));
+            assert(html.includes('Usage: /roll'));
+        });
+
+        t.test('/roll --chance', async () => {
+            const html = await render('/roll --chance');
+            assert.notStrictEqual(html, '<p>/roll --chance</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+        });
+
+        t.test('/roll -c', async () => {
+            const html = await render('/roll -c');
+            assert.notStrictEqual(html, '<p>/roll -c</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+        });
+
+        t.test('/roll --boardgame', async () => {
+            const html = await render('/roll --boardgame');
+            assert.notStrictEqual(html, '<p>/roll --boardgame</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+        });
+
+        t.test('/roll -bg', async () => {
+            const html = await render('/roll -bg');
+            assert.notStrictEqual(html, '<p>/roll -bg</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+        });
+
+        t.test('/roll --yahtzee', async () => {
+            const html = await render('/roll --yahtzee');
+            assert.notStrictEqual(html, '<p>/roll --yahtzee</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+            assert(html.includes('using the following 5 dice'));
+        });
+
+        t.test('/roll -y', async () => {
+            const html = await render('/roll -y');
+            assert.notStrictEqual(html, '<p>/roll -y</p>');
+            assert(!html.includes('Invalid options'));
+            assert(html.includes('You rolled a'));
+            assert(html.includes('using the following 5 dice'));
+        });
+
         t.test('/roll foo', async () => {
             const html = await render('/roll foo');
             assert.notStrictEqual(html, '<p>/roll foo</p>');
@@ -395,6 +482,11 @@ test('commands', { concurrency: true }, async (t) => {
 });
 
 test('detect image sizes', { concurrency: true }, async (t) => {
+    t.test('no images', async () => {
+        const html = await render('just some plain text', { detectImageSizes: true });
+        assert.strictEqual(html, '<p>just some plain text</p>');
+    });
+
     t.test('images', async () => {
         const html = await render('https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png', { detectImageSizes: true });
         assert.strictEqual(html, '<p><img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /> <img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /></p>');
@@ -708,12 +800,38 @@ test('strikethrough', async () => {
     assert.strictEqual(html, '<p><s>strikethrough</s></p>');
 });
 
-test('mehdown.kalturaEmbedHtml', () => {
-    const html = mehdown.kalturaEmbedHtml('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe?&flashvars[streamerType]=auto');
-    assert.strictEqual(html, '<iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/39156232?iframeembed=true&entry_id=0_meiqzwlr"></iframe>');
+test('mehdown.kalturaEmbedHtml', { concurrency: true }, async (t) => {
+    t.test('valid URL', () => {
+        const html = mehdown.kalturaEmbedHtml('https://www.kaltura.com/index.php/extwidget/preview/partner_id/2056591/uiconf_id/39156232/entry_id/0_meiqzwlr/embed/iframe?&flashvars[streamerType]=auto');
+        assert.strictEqual(html, '<iframe allowfullscreen class="kaltura" frameborder="0" src="https://cdnapisec.kaltura.com/p/2056591/embedIframeJs/uiconf_id/39156232?iframeembed=true&entry_id=0_meiqzwlr"></iframe>');
+    });
+
+    t.test('null', () => {
+        assert.strictEqual(mehdown.kalturaEmbedHtml(null), '');
+    });
+
+    t.test('empty string', () => {
+        assert.strictEqual(mehdown.kalturaEmbedHtml(''), '');
+    });
+
+    t.test('invalid URL', () => {
+        assert.strictEqual(mehdown.kalturaEmbedHtml('https://example.com'), '');
+    });
 });
 
 test('mehdown.youTubeEmbedHtml', { concurrency: true }, async (t) => {
+    t.test('null', () => {
+        assert.strictEqual(mehdown.youTubeEmbedHtml(null), '');
+    });
+
+    t.test('empty string', () => {
+        assert.strictEqual(mehdown.youTubeEmbedHtml(''), '');
+    });
+
+    t.test('invalid URL', () => {
+        assert.strictEqual(mehdown.youTubeEmbedHtml('https://example.com'), '');
+    });
+
     t.test('http://www.youtube.com/watch?v=kU9MuM4lP18', () => {
         const html = mehdown.youTubeEmbedHtml('http://www.youtube.com/watch?v=kU9MuM4lP18');
         assert.strictEqual(html, '<iframe allowfullscreen class="youtube" frameborder="0" src="https://www.youtube.com/embed/kU9MuM4lP18?autohide=1&color=white&showinfo=0&theme=light"></iframe>');
@@ -741,6 +859,16 @@ test('mehdown.youTubeEmbedHtml', { concurrency: true }, async (t) => {
 });
 
 test('render', { concurrency: true }, async (t) => {
+    t.test('empty string', async () => {
+        const html = await mehdown.render('');
+        assert.strictEqual(html, '');
+    });
+
+    t.test('null', async () => {
+        const html = await mehdown.render(null);
+        assert.strictEqual(html, '');
+    });
+
     t.test('async/await, no options', async () => {
         const html = await mehdown.render('**bold**');
         assert.strictEqual(html, '<p><strong>bold</strong></p>');
