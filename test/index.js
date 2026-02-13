@@ -167,7 +167,7 @@ test('commands', { concurrency: true }, async (t) => {
         });
     });
 
-    t.test('/giphy', { concurrency: true, skip: !process.env.GIPHY_API_KEY }, async (t) => {
+    t.test('/giphy', { concurrency: true }, async (t) => {
         t.test('/giphy', async () => {
             const html = await render('/giphy');
             assert.strictEqual(html, '<p>/giphy</p>');
@@ -175,15 +175,23 @@ test('commands', { concurrency: true }, async (t) => {
 
         t.test('/giphy meh', async () => {
             const html = await render('/giphy meh');
-            assert.notStrictEqual(html, '<p>/giphy meh</p>');
-            assert.notStrictEqual(html.indexOf('http'), -1);
+
+            if (process.env.GIPHY_API_KEY) {
+                assert.notStrictEqual(html, '<p>/giphy meh</p>');
+                assert.notStrictEqual(html.indexOf('http'), -1);
+            } else {
+                assert.strictEqual(html, '<p>/giphy meh</p>');
+            }
         });
 
         t.test('multiple /giphy commands', async () => {
             const html = await render('lorem ipsum\n/giphy first\nfoo bar\n/giphy second third\n@username /giphy fourth\nhey @username /giphy fifth\nthis is not a command `/giphy sixth`');
             assert.notStrictEqual(html.indexOf('lorem ipsum'), -1);
             assert.notStrictEqual(html.indexOf('foo bar'), -1);
-            assert.strictEqual(html.match(/<img/g).length, 2);
+
+            if (process.env.GIPHY_API_KEY) {
+                assert.strictEqual(html.match(/<img/g).length, 2);
+            }
         });
     });
 
@@ -206,7 +214,11 @@ test('commands', { concurrency: true }, async (t) => {
                 }
             });
 
-            t.test('/google meh with API key', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/google meh with API key', async () => {
+                if (!process.env.GOOGLE_API_KEY) {
+                    return;
+                }
+
                 const html = await render('/google meh');
                 assert.notStrictEqual(html, '<p>/google meh</p>');
             });
@@ -218,17 +230,27 @@ test('commands', { concurrency: true }, async (t) => {
                 assert.strictEqual(html, '<p>/image</p>');
             });
 
-            t.test('/image meh', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/image meh', async () => {
                 const html = await render('/image meh');
-                assert.notStrictEqual(html, '<p>/image meh</p>');
+
+                if (process.env.GOOGLE_API_KEY) {
+                    assert.notStrictEqual(html, '<p>/image meh</p>');
+                } else {
+                    assert.strictEqual(html, '<p>/image meh</p>');
+                }
             });
 
-            t.test('/image neon pink on black', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/image neon pink on black', async () => {
                 const html = await render('/image neon pink on black');
-                assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
+
+                if (process.env.GOOGLE_API_KEY) {
+                    assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
+                } else {
+                    assert.strictEqual(html, '<p>/image neon pink on black</p>');
+                }
             });
 
-            t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', async () => {
                 const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
                 assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
             });
@@ -252,14 +274,24 @@ test('commands', { concurrency: true }, async (t) => {
                 }
             });
 
-            t.test('/youtube Purple Reign', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/youtube Purple Reign', async () => {
                 const html = await render('/youtube Purple Reign');
-                assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
+
+                if (process.env.GOOGLE_API_KEY) {
+                    assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
+                } else {
+                    assert.strictEqual(html, '<p>/youtube Purple Reign</p>');
+                }
             });
 
-            t.test('/youtube simon\'s cat', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+            t.test('/youtube simon\'s cat', async () => {
                 const html = await render('/youtube simon\'s cat');
-                assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
+
+                if (process.env.GOOGLE_API_KEY) {
+                    assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
+                } else {
+                    assert.strictEqual(html, '<p>/youtube simon\u2019s cat</p>');
+                }
             });
         });
     });
