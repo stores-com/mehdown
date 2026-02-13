@@ -196,7 +196,7 @@ test('commands', { concurrency: true }, async (t) => {
     });
 
     t.test('Google API', { concurrency: 1 }, async (t) => {
-        t.test('/google', async (t) => {
+        t.test('/google', { concurrency: 1 }, async (t) => {
             t.test('/google', async () => {
                 const html = await render('/google');
                 assert.strictEqual(html, '<p>/google</p>');
@@ -224,7 +224,7 @@ test('commands', { concurrency: true }, async (t) => {
             });
         });
 
-        t.test('/image', { concurrency: true }, async (t) => {
+        t.test('/image', { concurrency: 1 }, async (t) => {
             t.test('/image', async () => {
                 const html = await render('/image');
                 assert.strictEqual(html, '<p>/image</p>');
@@ -256,7 +256,7 @@ test('commands', { concurrency: true }, async (t) => {
             });
         });
 
-        t.test('/youtube', async (t) => {
+        t.test('/youtube', { concurrency: 1 }, async (t) => {
             t.test('/youtube', async () => {
                 const html = await render('/youtube');
                 assert.strictEqual(html, '<p>/youtube</p>');
