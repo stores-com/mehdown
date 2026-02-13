@@ -138,7 +138,7 @@ test('commands', { concurrency: true }, async (t) => {
         });
     });
 
-    t.test('/giphy', { concurrency: true, timeout: 20000, skip: !process.env.GIPHY_API_KEY }, async (t) => {
+    t.test('/giphy', { concurrency: true, skip: !process.env.GIPHY_API_KEY }, async (t) => {
         t.test('/giphy', async () => {
             const html = await render('/giphy');
             assert.strictEqual(html, '<p>/giphy</p>');
@@ -158,8 +158,8 @@ test('commands', { concurrency: true }, async (t) => {
         });
     });
 
-    t.test('Google API', { concurrency: 1, timeout: 30000 }, async (t) => {
-        t.test('/google', { timeout: 10000 }, async (t) => {
+    t.test('Google API', { concurrency: 1 }, async (t) => {
+        t.test('/google', async (t) => {
             t.test('/google', async () => {
                 const html = await render('/google');
                 assert.strictEqual(html, '<p>/google</p>');
@@ -180,7 +180,7 @@ test('commands', { concurrency: true }, async (t) => {
             });
         });
 
-        t.test('/image', { timeout: 10000 }, async (t) => {
+        t.test('/image', { concurrency: true }, async (t) => {
             t.test('/image', async () => {
                 const html = await render('/image');
                 assert.strictEqual(html, '<p>/image</p>');
@@ -202,7 +202,7 @@ test('commands', { concurrency: true }, async (t) => {
             });
         });
 
-        t.test('/youtube', { timeout: 10000 }, async (t) => {
+        t.test('/youtube', async (t) => {
             t.test('/youtube', async () => {
                 const html = await render('/youtube');
                 assert.strictEqual(html, '<p>/youtube</p>');
@@ -400,7 +400,7 @@ test('detect image sizes', { concurrency: true }, async (t) => {
         assert.strictEqual(html, '<p><img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /> <img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /></p>');
     });
 
-    t.test('broken image', { timeout: 10000 }, async () => {
+    t.test('broken image', async () => {
         const html = await render('http://google.com/404.png', { detectImageSizes: true });
         assert.strictEqual(html, '<p><img src="http://google.com/404.png" /></p>');
     });

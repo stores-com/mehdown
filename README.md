@@ -67,10 +67,38 @@ The Markdown parser used on the forums at meh.com.
 
 ## Usage
 
-```
-var mehdown = require('mehdown');
+### async/await
 
-mehdown.render('markdown text here', { baseUrl: 'https://meh.com', commands: true, detectImageSizes: false }, function(err, html) {
+```javascript
+const mehdown = require('mehdown');
+
+const html = await mehdown.render('markdown text here');
+```
+
+### async/await with options
+
+```javascript
+const mehdown = require('mehdown');
+
+const html = await mehdown.render('markdown text here', { commands: true, detectImageSizes: false });
+```
+
+### Callback
+
+```javascript
+const mehdown = require('mehdown');
+
+mehdown.render('markdown text here', function(err, html) {
+    console.log(html);
+});
+```
+
+### Callback with options
+
+```javascript
+const mehdown = require('mehdown');
+
+mehdown.render('markdown text here', { commands: true, detectImageSizes: false }, function(err, html) {
     console.log(html);
 });
 ```
