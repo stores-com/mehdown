@@ -184,6 +184,11 @@ test('commands', { concurrency: true }, async (t) => {
             }
         });
 
+        t.test('/giphy THISISSOMETEXTTHATGIPHYDOESNOTUNDERSTAND', async () => {
+            const html = await render('/giphy THISISSOMETEXTTHATGIPHYDOESNOTUNDERSTAND');
+            assert.strictEqual(html, '<p>/giphy THISISSOMETEXTTHATGIPHYDOESNOTUNDERSTAND</p>');
+        });
+
         t.test('multiple /giphy commands', async () => {
             const html = await render('lorem ipsum\n/giphy first\nfoo bar\n/giphy second third\n@username /giphy fourth\nhey @username /giphy fifth\nthis is not a command `/giphy sixth`');
             assert.notStrictEqual(html.indexOf('lorem ipsum'), -1);
