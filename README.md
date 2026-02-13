@@ -1,7 +1,7 @@
 # mehdown
 
 [![Build Status](https://github.com/stores-com/mehdown/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/stores-com/mehdown/actions?query=workflow%3Abuild+branch%3Amain)
-[![Coverage Status](https://coveralls.io/repos/github/mediocre/mehdown/badge.svg?branch=main)](https://coveralls.io/github/mediocre/mehdown?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/stores-com/mehdown/badge.svg?branch=main)](https://coveralls.io/github/stores-com/mehdown?branch=main)
 
 The Markdown parser used on the forums at meh.com.
 
