@@ -1,10 +1,9 @@
 const assert = require('node:assert');
 const test = require('node:test');
-const { promisify } = require('node:util');
 
 const mehdown = require('../lib');
 
-const render = promisify(mehdown.render.bind(mehdown));
+const render = mehdown.render.bind(mehdown);
 
 test('bbcode', { concurrency: true }, async (t) => {
     t.test('[b]', async () => {
@@ -63,7 +62,7 @@ test('bbcode', { concurrency: true }, async (t) => {
     });
 });
 
-test('commands', async (t) => {
+test('commands', { concurrency: true }, async (t) => {
     t.test('/coinflip', { concurrency: true }, async (t) => {
         t.test('/coinflip', async () => {
             const html = await render('/coinflip');
@@ -139,7 +138,7 @@ test('commands', async (t) => {
         });
     });
 
-    t.test('/giphy', { timeout: 20000, skip: !process.env.GIPHY_API_KEY }, async (t) => {
+    t.test('/giphy', { concurrency: true, timeout: 20000, skip: !process.env.GIPHY_API_KEY }, async (t) => {
         t.test('/giphy', async () => {
             const html = await render('/giphy');
             assert.strictEqual(html, '<p>/giphy</p>');
@@ -159,46 +158,74 @@ test('commands', async (t) => {
         });
     });
 
-    t.test('/google', { timeout: 10000 }, async (t) => {
-        t.test('/google', async () => {
-            const html = await render('/google');
-            assert.strictEqual(html, '<p>/google</p>');
+    t.test('Google API', { concurrency: 1, timeout: 30000 }, async (t) => {
+        t.test('/google', { timeout: 10000 }, async (t) => {
+            t.test('/google', async () => {
+                const html = await render('/google');
+                assert.strictEqual(html, '<p>/google</p>');
+            });
+
+            t.test('/google meh without API key', async () => {
+                const googleApiKey = process.env.GOOGLE_API_KEY;
+                process.env.GOOGLE_API_KEY = undefined;
+
+                const html = await render('/google meh');
+                assert.strictEqual(html, '<p>/google meh</p>');
+                process.env.GOOGLE_API_KEY = googleApiKey;
+            });
+
+            t.test('/google meh with API key', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/google meh');
+                assert.notStrictEqual(html, '<p>/google meh</p>');
+            });
         });
 
-        t.test('/google meh without API key', async () => {
-            const googleApiKey = process.env.GOOGLE_API_KEY;
-            process.env.GOOGLE_API_KEY = undefined;
+        t.test('/image', { timeout: 10000 }, async (t) => {
+            t.test('/image', async () => {
+                const html = await render('/image');
+                assert.strictEqual(html, '<p>/image</p>');
+            });
 
-            const html = await render('/google meh');
-            assert.strictEqual(html, '<p>/google meh</p>');
-            process.env.GOOGLE_API_KEY = googleApiKey;
+            t.test('/image meh', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/image meh');
+                assert.notStrictEqual(html, '<p>/image meh</p>');
+            });
+
+            t.test('/image neon pink on black', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/image neon pink on black');
+                assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
+            });
+
+            t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
+                assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
+            });
         });
 
-        t.test('/google meh with API key', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/google meh');
-            assert.notStrictEqual(html, '<p>/google meh</p>');
-        });
-    });
+        t.test('/youtube', { timeout: 10000 }, async (t) => {
+            t.test('/youtube', async () => {
+                const html = await render('/youtube');
+                assert.strictEqual(html, '<p>/youtube</p>');
+            });
 
-    t.test('/image', { timeout: 10000 }, async (t) => {
-        t.test('/image', async () => {
-            const html = await render('/image');
-            assert.strictEqual(html, '<p>/image</p>');
-        });
+            t.test('/youtube meh without API key', async () => {
+                const googleApiKey = process.env.GOOGLE_API_KEY;
+                process.env.GOOGLE_API_KEY = undefined;
 
-        t.test('/image meh', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/image meh');
-            assert.notStrictEqual(html, '<p>/image meh</p>');
-        });
+                const html = await render('/youtube meh');
+                assert.strictEqual(html, '<p>/youtube meh</p>');
+                process.env.GOOGLE_API_KEY = googleApiKey;
+            });
 
-        t.test('/image neon pink on black', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/image neon pink on black');
-            assert.notStrictEqual(html, '<p>/image neon pink on black</p>');
-        });
+            t.test('/youtube Purple Reign', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/youtube Purple Reign');
+                assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
+            });
 
-        t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
-            assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
+            t.test('/youtube simon\'s cat', { skip: !process.env.GOOGLE_API_KEY }, async () => {
+                const html = await render('/youtube simon\'s cat');
+                assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
+            });
         });
     });
 
@@ -365,35 +392,9 @@ test('commands', async (t) => {
         const html = await render('/vintner');
         assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
     });
-
-    t.test('/youtube', { timeout: 10000 }, async (t) => {
-        t.test('/youtube', async () => {
-            const html = await render('/youtube');
-            assert.strictEqual(html, '<p>/youtube</p>');
-        });
-
-        t.test('/youtube meh without API key', async () => {
-            const googleApiKey = process.env.GOOGLE_API_KEY;
-            process.env.GOOGLE_API_KEY = undefined;
-
-            const html = await render('/youtube meh');
-            assert.strictEqual(html, '<p>/youtube meh</p>');
-            process.env.GOOGLE_API_KEY = googleApiKey;
-        });
-
-        t.test('/youtube Purple Reign', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/youtube Purple Reign');
-            assert.notStrictEqual(html, '<p>/youtube Purple Reign</p>');
-        });
-
-        t.test('/youtube simon\'s cat', { skip: !process.env.GOOGLE_API_KEY }, async () => {
-            const html = await render('/youtube simon\'s cat');
-            assert.notStrictEqual(html, '<a href="https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ" rel="nofollow" target="_blank">https://www.youtube.com/channel/UCH6vXjt-BA7QHl0KnfL-7RQ</a>');
-        });
-    });
 });
 
-test('detect image sizes', async (t) => {
+test('detect image sizes', { concurrency: true }, async (t) => {
     t.test('images', async () => {
         const html = await render('https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png', { detectImageSizes: true });
         assert.strictEqual(html, '<p><img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /> <img height="528" src="https://res.cloudinary.com/mediocre/image/upload/kekjvvhpkxh0v8x9o6u7.png" width="528" /></p>');
@@ -736,6 +737,34 @@ test('mehdown.youTubeEmbedHtml', { concurrency: true }, async (t) => {
     t.test('http://www.youtube.com/watch?v=kU9MuM4lP18&start=10&end=20', () => {
         const html = mehdown.youTubeEmbedHtml('http://www.youtube.com/watch?v=kU9MuM4lP18&start=10&end=20');
         assert.strictEqual(html, '<iframe allowfullscreen class="youtube" frameborder="0" src="https://www.youtube.com/embed/kU9MuM4lP18?autohide=1&color=white&showinfo=0&theme=light&end=20&start=10"></iframe>');
+    });
+});
+
+test('render', { concurrency: true }, async (t) => {
+    t.test('async/await, no options', async () => {
+        const html = await mehdown.render('**bold**');
+        assert.strictEqual(html, '<p><strong>bold</strong></p>');
+    });
+
+    t.test('async/await, options', async () => {
+        const html = await mehdown.render('**bold**', { commands: false });
+        assert.strictEqual(html, '<p><strong>bold</strong></p>');
+    });
+
+    t.test('callback, no options', (t, done) => {
+        mehdown.render('**bold**', (err, html) => {
+            assert.ifError(err);
+            assert.strictEqual(html, '<p><strong>bold</strong></p>');
+            done();
+        });
+    });
+
+    t.test('callback, options', (t, done) => {
+        mehdown.render('**bold**', { commands: false }, (err, html) => {
+            assert.ifError(err);
+            assert.strictEqual(html, '<p><strong>bold</strong></p>');
+            done();
+        });
     });
 });
 
