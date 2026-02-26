@@ -6,17 +6,14 @@ jobs:
   test:
     if: github.actor != 'dependabot[bot]'
     env:
-      RUN_COVERAGE_FOR: 24.11.0
+      NODE_VERSION: 24.11.0
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24.11.0]
 
     steps:
-    - name: Setup Node ${{ matrix.node-version }}
+    - name: Setup Node ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v6
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ env.NODE_VERSION }}
 
     - name: Checkout
       uses: actions/checkout@v6
@@ -36,12 +33,7 @@ jobs:
         GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
-        if [ "${{ matrix.node-version }}" == "${RUN_COVERAGE_FOR}" ]
-        then
-          npm run coveralls
-        else
-          npm test
-        fi
+        npm run coveralls
 
     - if: always()
       name: Send Slack notification
