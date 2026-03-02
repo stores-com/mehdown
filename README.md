@@ -2,6 +2,8 @@
 
 [![Build Status](https://github.com/stores-com/mehdown/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/stores-com/mehdown/actions?query=workflow%3Abuild+branch%3Amain)
 [![Coverage Status](https://coveralls.io/repos/github/stores-com/mehdown/badge.svg?branch=main)](https://coveralls.io/github/stores-com/mehdown?branch=main)
+[![npm version](https://img.shields.io/npm/v/mehdown)](https://www.npmjs.com/package/mehdown)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 The Markdown parser used on the forums at meh.com.
 
