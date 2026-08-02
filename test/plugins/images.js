@@ -48,7 +48,7 @@ test('images', { concurrency: true }, async (t) => {
     });
 
     t.test('.webp', async () => {
-        const html = await render('https://d2b8wt72ktn9a2.cloudfront.net/mediocre/image/upload/v1741576249/pav6x1rkkve9imwcvybe.png');
-        assert.strictEqual(html, '<p><img src="https://d2b8wt72ktn9a2.cloudfront.net/mediocre/image/upload/v1741576249/pav6x1rkkve9imwcvybe.png" /></p>');
+        const html = await render('https://media.stores.com/mediocre/image/upload/v1741576249/pav6x1rkkve9imwcvybe.png');
+        assert.strictEqual(html, '<p><img src="https://media.stores.com/mediocre/image/upload/v1741576249/pav6x1rkkve9imwcvybe.png" /></p>');
     });
 });
