@@ -17,8 +17,8 @@
     },
     "description": "The Markdown parser used on the forums at meh.com.",
     "devDependencies": {
-        "@eslint/js": "*",
-        "globals": "*"
+        "@eslint/js": "~10.0.1",
+        "globals": "~17.6.0"
     },
     "keywords": [
         "markdown"
