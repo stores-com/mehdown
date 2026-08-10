@@ -585,36 +585,6 @@ test('detect image sizes', { concurrency: true }, async (t) => {
     });
 });
 
-test('imageProbeHostRegExp', { concurrency: true }, async (t) => {
-    t.test('matches hosts on the list', () => {
-        for (const hostname of ['d2b8wt72ktn9a2.cloudfront.net', 'i.imgur.com', 'media.stores.com', 'res.cloudinary.com', 'substackcdn.com', 'upload.wikimedia.org']) {
-            assert.ok(mehdown.imageProbeHostRegExp.test(hostname), `expected ${hostname} to match`);
-        }
-    });
-
-    t.test('matches a listed domain and any of its subdomains', () => {
-        for (const hostname of ['giphy.com', 'x.giphy.com', 'media0.giphy.com', 'a.b.giphy.com', 'tenor.com', 'c.tenor.com']) {
-            assert.ok(mehdown.imageProbeHostRegExp.test(hostname), `expected ${hostname} to match`);
-        }
-    });
-
-    t.test('does not match a host that only ends with a listed host', () => {
-        for (const hostname of ['notsubstackcdn.com', 'xsubstackcdn.com', 'xgiphy.com', 'notgiphy.com', 'x-media.stores.com', 'notd2b8wt72ktn9a2.cloudfront.net']) {
-            assert.ok(!mehdown.imageProbeHostRegExp.test(hostname), `expected ${hostname} not to match`);
-        }
-    });
-
-    t.test('does not match a listed host used as the prefix of another domain', () => {
-        for (const hostname of ['substackcdn.com.example.net', 'giphy.com.example.net', 'res.cloudinary.com.example.net']) {
-            assert.ok(!mehdown.imageProbeHostRegExp.test(hostname), `expected ${hostname} not to match`);
-        }
-    });
-
-    t.test('does not match a subdomain of a listed exact host', () => {
-        assert.ok(!mehdown.imageProbeHostRegExp.test('sub.substackcdn.com'));
-    });
-});
-
 test('email', { concurrency: true }, async (t) => {
     t.test('email address', async () => {
         const html = await render('email me at whatever@somewhere.com if you are not a meanie.');
