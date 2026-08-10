@@ -215,7 +215,7 @@ test('commands', { concurrency: true }, async (t) => {
 
     t.test('/labrat', async () => {
         const html = await render('/labrat');
-        assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1537473791/mijjibf0vxdx79wtqrjh.png" /></p>');
+        assert.strictEqual(html, '<p><img src="https://media.stores.com/mediocre/image/upload/v1537473791/mijjibf0vxdx79wtqrjh.png" /></p>');
     });
 
     t.test('/leet', { concurrency: true }, async (t) => {
@@ -414,7 +414,7 @@ test('commands', { concurrency: true }, async (t) => {
 
     t.test('/vintner', async () => {
         const html = await render('/vintner');
-        assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
+        assert.strictEqual(html, '<p><img src="https://media.stores.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
     });
 });
 
