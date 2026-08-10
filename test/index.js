@@ -215,7 +215,7 @@ test('commands', { concurrency: true }, async (t) => {
 
     t.test('/labrat', async () => {
         const html = await render('/labrat');
-        assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1537473791/mijjibf0vxdx79wtqrjh.png" /></p>');
+        assert.strictEqual(html, '<p><img src="https://media.stores.com/mediocre/image/upload/v1537473791/mijjibf0vxdx79wtqrjh.png" /></p>');
     });
 
     t.test('/leet', { concurrency: true }, async (t) => {
@@ -414,7 +414,7 @@ test('commands', { concurrency: true }, async (t) => {
 
     t.test('/vintner', async () => {
         const html = await render('/vintner');
-        assert.strictEqual(html, '<p><img src="https://res.cloudinary.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
+        assert.strictEqual(html, '<p><img src="https://media.stores.com/mediocre/image/upload/v1540480421/joddffo2zrhb1pzxz7le.png" /></p>');
     });
 });
 
@@ -536,6 +536,11 @@ test('detect image sizes', { concurrency: true }, async (t) => {
         } finally {
             server.close();
         }
+    });
+
+    t.test('image on a subdomain of an allowed domain', async () => {
+        const html = await render('https://media0.giphy.com/media/3o7TKvGA0JJ9l33nLa/giphy.gif', { detectImageSizes: true });
+        assert.strictEqual(html, '<p><img height="270" src="https://media0.giphy.com/media/3o7TKvGA0JJ9l33nLa/giphy.gif" width="384" /></p>');
     });
 
     t.test('images', async () => {
