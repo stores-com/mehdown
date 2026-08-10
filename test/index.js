@@ -1,4 +1,5 @@
 const assert = require('node:assert');
+const http = require('node:http');
 const test = require('node:test');
 
 const mehdown = require('../lib');
@@ -512,6 +513,29 @@ test('detect image sizes', { concurrency: true }, async (t) => {
     t.test('no images', async () => {
         const html = await render('just some plain text', { detectImageSizes: true });
         assert.strictEqual(html, '<p>just some plain text</p>');
+    });
+
+    t.test('does not request images hosted on loopback addresses', async () => {
+        let requested = false;
+
+        const server = http.createServer((req, res) => {
+            requested = true;
+            res.writeHead(404);
+            res.end();
+        });
+
+        await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+
+        const port = server.address().port;
+
+        try {
+            const html = await render(`http://127.0.0.1:${port}/image.png`, { detectImageSizes: true });
+
+            assert.strictEqual(requested, false, 'expected no request to the loopback host');
+            assert.strictEqual(html, `<p><img src="http://127.0.0.1:${port}/image.png" /></p>`);
+        } finally {
+            server.close();
+        }
     });
 
     t.test('images', async () => {
