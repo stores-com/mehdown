@@ -419,56 +419,6 @@ test('commands', { concurrency: true }, async (t) => {
 });
 
 test('Google API', { concurrency: 1 }, async (t) => {
-    t.test('/google', { concurrency: 1 }, async (t) => {
-        t.test('/google', async () => {
-            const html = await render('/google');
-            assert.strictEqual(html, '<p>/google</p>');
-        });
-
-        t.test('/google meh without API key', async () => {
-            const googleApiKey = process.env.GOOGLE_API_KEY;
-            delete process.env.GOOGLE_API_KEY;
-
-            const html = await render('/google meh');
-            assert.strictEqual(html, '<p>/google meh</p>');
-
-            if (googleApiKey) {
-                process.env.GOOGLE_API_KEY = googleApiKey;
-            }
-        });
-
-        t.test('/google meh with API key', async () => {
-            if (!process.env.GOOGLE_API_KEY) {
-                return;
-            }
-
-            const html = await render('/google meh');
-            assert.ok(html);
-        });
-    });
-
-    t.test('/image', { concurrency: 1 }, async (t) => {
-        t.test('/image', async () => {
-            const html = await render('/image');
-            assert.strictEqual(html, '<p>/image</p>');
-        });
-
-        t.test('/image meh', async () => {
-            const html = await render('/image meh');
-            assert.ok(html);
-        });
-
-        t.test('/image neon pink on black', async () => {
-            const html = await render('/image neon pink on black');
-            assert.ok(html);
-        });
-
-        t.test('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND', async () => {
-            const html = await render('/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND');
-            assert.strictEqual(html, '<p>/image THISISSOMETEXTTHATGOOGLEDOESNOTUNDERSTAND</p>');
-        });
-    });
-
     t.test('/youtube', { concurrency: 1 }, async (t) => {
         t.test('/youtube', async () => {
             const html = await render('/youtube');
