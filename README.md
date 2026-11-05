@@ -51,8 +51,6 @@ The Markdown parser used on the forums at meh.com.
 - `/emojify text` - Swap out words with emoji
 - `/flip text` - uʍop ǝpısdn ʇxǝʇ dıʃℲ
 - `/giphy text` - Post a random GIF
-- `/google query` - Search Google for the specified query
-- `/image text` - Post a random image
 - `/jumble text` - Shuffele middele letetsrs of wodrs
 - `/leet text` - Translate text to L3375P34K
 - `/lolspeak text` - Translate text to LOLSPEAK
