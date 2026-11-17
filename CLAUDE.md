@@ -17,10 +17,10 @@ npm test
 npm run coveralls
 
 # Run a specific test file
-npx mocha test/plugins/youtube.js
+node --test --test-force-exit --test-reporter=spec test/plugins/youtube.js
 
 # Run tests matching a pattern
-npx mocha test/**/*.js --grep "emoji"
+node --test --test-force-exit --test-reporter=spec --test-name-pattern="emoji"
 ```
 
 ### Linting
@@ -52,15 +52,15 @@ The codebase uses markdown-it as the base parser and extends it with custom plug
 ### Key Implementation Patterns
 
 1. **Plugin Registration**: Plugins are registered in lib/index.js using markdown-it's `use()` method
-2. **Async Processing**: The main render function uses async.parallel() for operations like image size detection
+2. **Async Processing**: The main render function runs its steps in order with `async.series()` (commands, BBCode, markdown, image sizes)
 3. **Command Handling**: Commands are processed before markdown parsing through regex pattern matching
 4. **BBCode Processing**: BBCode tags are converted to markdown before the main parsing phase
 
 ### Testing Approach
-- Uses Mocha as the test framework
+- Uses `node:test` with `node:assert`
 - Tests are organized to mirror the source structure
 - Each plugin has its own test file
-- Coverage reporting via nyc and Coveralls
+- Coverage reporting via `--experimental-test-coverage` (lcov) and Coveralls
 
 ## ESLint Configuration
 The project uses flat config format (eslint.config.js) with:
